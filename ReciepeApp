@@ -1,0 +1,107 @@
+using System;
+using System.Collections.Generic;
+
+namespace RecipeApplication
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Initialize empty list to hold recipes
+            List<Recipe> recipes = new List<Recipe>();
+
+
+            while (true)
+            {
+                // Display main menu
+                Console.WriteLine("1. Add Recipe");
+                Console.WriteLine("2. View Recipe");
+                Console.WriteLine("3. Search Recipes");
+                Console.WriteLine("4. Exit");
+                Console.Write("Enter your choice: ");
+               
+
+                // Read user input
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        // Add new recipe
+                        Console.Write("Enter recipe name: ");
+                        string name = Console.ReadLine();
+                        Console.Write("Enter ingredients (separated by commas): ");
+                        string[] ingredients = Console.ReadLine().Split(',');
+                        Console.Write("Enter instructions: ");
+                        string instructions = Console.ReadLine();
+                        Recipe newRecipe = new Recipe(name, ingredients, instructions);
+                        recipes.Add(newRecipe);
+                        Console.WriteLine($"Recipe \"{name}\" added.");
+                        break;
+                    case "2":
+                        // View recipe
+                        Console.Write("Enter recipe name: ");
+                        string recipeName = Console.ReadLine();
+                        Recipe recipe = recipes.Find(r => r.Name == recipeName);
+                        if (recipe != null)
+                        {
+                            Console.WriteLine($"Recipe: {recipe.Name}");
+                            Console.WriteLine("Ingredients:");
+                            foreach (string ingredient in recipe.Ingredients)
+                            {
+                                Console.WriteLine("- " + ingredient);
+                            }
+                            Console.WriteLine("Instructions:");
+                            Console.WriteLine(recipe.Instructions);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Recipe not found.");
+                        }
+                        break;
+                    case "3":
+                        // Search for recipes containing an ingredient
+                        Console.Write("Enter an ingredient: ");
+                        string ingredientName = Console.ReadLine();
+
+                        List<Recipe> matchingRecipes = recipes.FindAll(r => r.Ingredients.Exists(i => i.Equals(ingredientName, StringComparison.OrdinalIgnoreCase)));
+
+                        if (matchingRecipes.Count > 0)
+                        {
+                            Console.WriteLine($"Found {matchingRecipes.Count} recipes containing {ingredientName}:");
+                            foreach (Recipe matchingRecipe in matchingRecipes)
+                            {
+                                Console.WriteLine("- " + matchingRecipe.Name);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"No recipes found containing {ingredientName}.");
+                        }
+                        break;
+                    case "4":
+                        // Exit application
+                        Console.WriteLine("Goodbye!");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please enter a valid option.");
+                        break;
+                }
+            }
+        }
+    }
+
+    public class Recipe
+    {
+        public string Name { get; set; }
+        public List<string> Ingredients { get; set; }
+        public string Instructions { get; set; }
+
+        public Recipe(string name, string[] ingredients, string instructions)
+        {
+            Name = name;
+            Ingredients = new List<string>(ingredients);
+            Instructions = instructions;
+        }
+    }
+}
